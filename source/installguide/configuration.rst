@@ -1594,6 +1594,77 @@ When a volume is created by the plugin, it will create bi-directional mappings i
 -  Each volume's description field in the Pure Flasharray storage system will have a formatted key/value pair with metadata mappings for the Cloudstack volume definition (user volume name, volume uuid, account/project information)
 -  Each virtual volume's WWID will be stored in the volume's path field in Cloudstack
 
+NetApp ONTAP Plug-in
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This plugin enables NetApp ONTAP storage systems as a managed primary storage in
+CloudStack for KVM hypervisors. It supports both NFS 3.0 and iSCSI protocols,
+integrating with the traditional ONTAP unified storage architecture.
+
+.. note::
+   The NetApp ONTAP storage plug-in for CloudStack is part of the standard
+   CloudStack install. There is no additional work required to add this
+   component.
+
+This documentation assumes you have the following configured in your environment
+before configuring a storage pool in CloudStack:
+
+-  NetApp ONTAP 9.15.1 or higher.
+-  A Storage Virtual Machine (SVM) configured with the appropriate protocol
+   (NFS or iSCSI) enabled.
+-  Management LIF accessible from the CloudStack management server on port 443
+   (HTTPS).
+-  Data LIF(s) of IPv4 type, accessible from all KVM hypervisor hosts where
+   volumes will be attached to Instances.
+-  Aggregates assigned to the SVM with sufficient capacity.
+-  For iSCSI: KVM hosts must have the iSCSI initiator configured with a valid
+   IQN. The host IQN must be set in the host's storage URL in CloudStack.
+-  For NFS: KVM hosts must have NFS client packages installed.
+
+When this storage pool is used with Compute or Disk Offerings, an administrator
+is able to build an environment in which a root or data disk that a user creates
+leads to the dynamic creation of a volume on the ONTAP storage system. Such a
+volume is associated with one (and only ever one) CloudStack volume, so
+performance of the CloudStack volume does not vary depending on how heavily other
+tenants are using the system. Volume migration is supported between ONTAP storage
+pools and between ONTAP storage pools and NFS storage pools.
+
+.. note::
+   ONTAP requires a minimum volume size of 1.56 GB (1,677,721,600 bytes). The
+   plugin will automatically adjust requested sizes below this threshold.
+
+The ``createStoragePool`` API can be used to configure an ONTAP primary storage
+pool with the following parameters:
+
+-  command=createStoragePool
+-  scope=[zone | cluster]
+-  zoneid=[your zone id]
+-  podid=[your pod id, for cluster-wide primary storage]
+-  clusterid=[your cluster id, for cluster-wide primary storage]
+-  name=[name for primary storage]
+-  hypervisor=KVM
+-  provider=ONTAP
+-  url=[storage pool url]
+
+The url parameter contains the ONTAP storage pool connection details, specified
+as semicolon-separated key=value pairs in the following format::
+
+   username=<USERNAME>;password=<PASSWORD>;svmName=<SVM_NAME>;protocol=<PROTOCOL>;managementLIF=<MGMT_LIF_IP>
+
+-  USERNAME: ONTAP cluster admin username.
+-  PASSWORD: ONTAP cluster admin password (URL-encoded; for example, '=' is
+   represented as '%3D').
+-  SVM_NAME: name of the Storage Virtual Machine (SVM) configured on ONTAP.
+-  PROTOCOL: storage protocol to use. Must be one of ``NFS3`` or ``ISCSI``.
+-  MGMT_LIF_IP: IP address of the ONTAP cluster management LIF.
+
+Limitations:
+
+-  Supports only KVM hypervisor.
+-  Supports only Unified ONTAP storage (disaggregated ONTAP is not supported).
+-  Supports only NFS 3.0 and iSCSI protocols.
+-  IPv6 and FQDN-type Data LIFs are not supported.
+
 .. _add-secondary-storage:
 
 Add Secondary Storage
