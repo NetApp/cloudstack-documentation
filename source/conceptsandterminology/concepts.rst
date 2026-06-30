@@ -464,7 +464,7 @@ for example:
 
 -  Pure FlashArray for FiberChannel
 
--  NetApp ONTAP for NFS and iSCSI
+-  NetApp ONTAP for NFS 3.0 and iSCSI
 
 If you intend to use only local disk for your installation, you can skip
 adding separate primary storage.

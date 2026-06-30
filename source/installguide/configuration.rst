@@ -1597,41 +1597,33 @@ When a volume is created by the plugin, it will create bi-directional mappings i
 NetApp ONTAP Plug-in
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This plugin enables NetApp ONTAP storage systems as a managed primary storage in
-CloudStack for KVM hypervisors. It supports both NFS 3.0 and iSCSI protocols,
-integrating with the traditional ONTAP unified storage architecture.
+This plugin enables NetApp Unified ONTAP storage systems as a managed primary
+storage in CloudStack for KVM hypervisors. It supports both NFS 3.0 and iSCSI
+protocols, integrating with the traditional ONTAP unified storage architecture.
 
-.. note::
-   The NetApp ONTAP storage plug-in for CloudStack is part of the standard
-   CloudStack install. There is no additional work required to add this
-   component.
+This documentation assumes you have the following configured in your
+environment before adding a storage pool in CloudStack:
 
-This documentation assumes you have the following configured in your environment
-before configuring a storage pool in CloudStack:
-
--  NetApp ONTAP 9.15.1 or higher.
--  A Storage Virtual Machine (SVM) configured with the appropriate protocol
-   (NFS or iSCSI) enabled.
--  Management LIF accessible from the CloudStack management server on port 443
+-  NetApp Unified ONTAP 9.15.1 or higher.
+-  A Storage Virtual Machine (SVM) in ONTAP storage with NFS 3.0 or iSCSI protocol enabled.
+-  ONTAP Management LIF accessible from the CloudStack management server on port 443
    (HTTPS).
--  Data LIF(s) of IPv4 type, accessible from all KVM hypervisor hosts where
-   volumes will be attached to Instances.
+-  A Data LIF of IPv4 type on the SVM, reachable from all KVM hypervisor hosts.
 -  Aggregates assigned to the SVM with sufficient capacity.
--  For iSCSI: KVM hosts must have the iSCSI initiator configured with a valid
-   IQN. The host IQN must be set in the host's storage URL in CloudStack.
--  For NFS: KVM hosts must have NFS client packages installed.
+-  For iSCSI: iSCSI protocol enabled on the SVM and adapter configured.
+-  For NFS 3.0: NFS protocol enabled on the SVM and NFS client installed on
+   each KVM host.
 
 When this storage pool is used with Compute or Disk Offerings, an administrator
 is able to build an environment in which a root or data disk that a user creates
-leads to the dynamic creation of a volume on the ONTAP storage system. Such a
-volume is associated with one (and only ever one) CloudStack volume, so
+leads to the dynamic creation of a LUN or file on the ONTAP storage system. Such a
+LUN or file is associated with one (and only ever one) CloudStack volume, so
 performance of the CloudStack volume does not vary depending on how heavily other
-tenants are using the system. Volume migration is supported between ONTAP storage
-pools and between ONTAP storage pools and NFS storage pools.
+tenants are using the system.
 
 .. note::
    ONTAP requires a minimum volume size of 1.56 GB (1,677,721,600 bytes). The
-   plugin will automatically adjust requested sizes below this threshold.
+   plugin will automatically adjust any requested size below this threshold.
 
 The ``createStoragePool`` API can be used to configure an ONTAP primary storage
 pool with the following parameters:
@@ -1644,26 +1636,24 @@ pool with the following parameters:
 -  name=[name for primary storage]
 -  hypervisor=KVM
 -  provider=ONTAP
--  url=[storage pool url]
+-  managed=true
+-  capacitybytes=[capacity in bytes; minimum 1,677,721,600]
 
-The url parameter contains the ONTAP storage pool connection details, specified
-as semicolon-separated key=value pairs in the following format::
+The ``details`` parameter contains the ONTAP storage pool connection details,
+specified as key=value pairs in the following format::
 
-   username=<USERNAME>;password=<PASSWORD>;svmName=<SVM_NAME>;protocol=<PROTOCOL>;managementLIF=<MGMT_LIF_IP>
+   details[0].key=username,details[0].value=<USERNAME>
+   details[1].key=password,details[1].value=<PASSWORD>
+   details[2].key=svmName,details[2].value=<SVM_NAME>
+   details[3].key=protocol,details[3].value=<NFS3|ISCSI>
+   details[4].key=storageIP,details[4].value=<MGMT_LIF_IP>
 
--  USERNAME: ONTAP cluster admin username.
--  PASSWORD: ONTAP cluster admin password (URL-encoded; for example, '=' is
-   represented as '%3D').
--  SVM_NAME: name of the Storage Virtual Machine (SVM) configured on ONTAP.
--  PROTOCOL: storage protocol to use. Must be one of ``NFS3`` or ``ISCSI``.
--  MGMT_LIF_IP: IP address of the ONTAP cluster management LIF.
+-  USERNAME: ONTAP cluster admin username
+-  PASSWORD: ONTAP cluster admin password
+-  SVM_NAME: name of the Storage Virtual Machine (SVM) on ONTAP
+-  PROTOCOL: storage protocol. Must be one of ``NFS3`` or ``ISCSI``
+-  MGMT_LIF_IP: IPv4 address of the ONTAP management LIF (port 443, HTTPS)
 
-Limitations:
-
--  Supports only KVM hypervisor.
--  Supports only Unified ONTAP storage (disaggregated ONTAP is not supported).
--  Supports only NFS 3.0 and iSCSI protocols.
--  IPv6 and FQDN-type Data LIFs are not supported.
 
 .. _add-secondary-storage:
 
