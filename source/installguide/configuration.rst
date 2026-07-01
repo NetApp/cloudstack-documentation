@@ -1606,53 +1606,37 @@ environment before adding a storage pool in CloudStack:
 
 -  NetApp Unified ONTAP 9.15.1 or higher.
 -  A Storage Virtual Machine (SVM) in ONTAP storage with NFS 3.0 or iSCSI protocol enabled.
--  ONTAP Management LIF accessible from the CloudStack management server on port 443
-   (HTTPS).
--  A Data LIF of IPv4 type on the SVM, reachable from all KVM hypervisor hosts.
--  Aggregates assigned to the SVM with sufficient capacity.
--  For iSCSI: iSCSI protocol enabled on the SVM and adapter configured.
--  For NFS 3.0: NFS protocol enabled on the SVM and NFS client installed on
-   each KVM host.
+-  Only IPv4 Data LIF is supported on the SVM, and it must be reachable from
+   all KVM hypervisor hosts.
+-  Ensure Storage VM (SVM) is mapped to aggregates (aggrs) with sufficient
+   capacity.
+-  For iSCSI: iSCSI protocol enabled on the KVM host and adapter is configured.
+-  For NFS 3.0: NFS protocol enabled on the KVM host.
 
 When this storage pool is used with Compute or Disk Offerings, an administrator
 is able to build an environment in which a root or data disk that a user creates
-leads to the dynamic creation of a LUN or file on the ONTAP storage system. Such a
+leads to the dynamic creation of a LUN or file on the ONTAP volume. Such a
 LUN or file is associated with one (and only ever one) CloudStack volume, so
 performance of the CloudStack volume does not vary depending on how heavily other
 tenants are using the system.
 
-.. note::
-   ONTAP requires a minimum volume size of 1.56 GB (1,677,721,600 bytes). The
-   plugin will automatically adjust any requested size below this threshold.
+Through the CloudStack UI, you can create ONTAP storage pool using these
+required fields:
 
-The ``createStoragePool`` API can be used to configure an ONTAP primary storage
-pool with the following parameters:
-
--  command=createStoragePool
--  scope=[zone | cluster]
--  zoneid=[your zone id]
--  podid=[your pod id, for cluster-wide primary storage]
--  clusterid=[your cluster id, for cluster-wide primary storage]
--  name=[name for primary storage]
--  hypervisor=KVM
--  provider=ONTAP
--  managed=true
--  capacitybytes=[capacity in bytes; minimum 1,677,721,600]
-
-The ``details`` parameter contains the ONTAP storage pool connection details,
-specified as key=value pairs in the following format::
-
-   details[0].key=username,details[0].value=<USERNAME>
-   details[1].key=password,details[1].value=<PASSWORD>
-   details[2].key=svmName,details[2].value=<SVM_NAME>
-   details[3].key=protocol,details[3].value=<NFS3|ISCSI>
-   details[4].key=storageIP,details[4].value=<MGMT_LIF_IP>
-
--  USERNAME: ONTAP cluster admin username
--  PASSWORD: ONTAP cluster admin password
--  SVM_NAME: name of the Storage Virtual Machine (SVM) on ONTAP
--  PROTOCOL: storage protocol. Must be one of ``NFS3`` or ``ISCSI``
--  MGMT_LIF_IP: IPv4 address of the ONTAP management LIF (port 443, HTTPS)
+-  Provider: NetApp ONTAP
+-  Scope: Zone or Cluster
+-  Zone: target zone name
+-  Pod: Pod name (required for Cluster scope)
+-  Cluster: Cluster name (required for Cluster scope)
+-  Name: storage pool name
+-  Protocol: NFS3 or ISCSI
+-  Storage Array IP: ONTAP management LIF IP
+-  Username: ONTAP admin username
+-  Password: ONTAP admin password
+-  SVM Name: existing SVM name
+-  Managed: set to true
+-  Capacity Bytes: total capacity in bytes
+-  Storage Tags: storage pool tags
 
 
 .. _add-secondary-storage:
