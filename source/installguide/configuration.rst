@@ -1634,7 +1634,6 @@ required fields:
 -  Username: ONTAP Storage IP username
 -  Password: ONTAP Storage IP password
 -  SVM Name: SVM name in ONTAP storage
--  Managed: set to true
 -  Capacity Bytes: total capacity in bytes
 -  Storage Tags: storage pool tags
 
