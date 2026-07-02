@@ -1606,8 +1606,7 @@ environment before adding a storage pool in CloudStack:
 
 -  NetApp Unified ONTAP 9.15.1 or higher.
 -  A Storage Virtual Machine (SVM) in ONTAP storage with NFS 3.0 or iSCSI protocol enabled.
--  Only IPv4 Data LIF is supported on the SVM, and it must be reachable from
-   all KVM hypervisor hosts.
+-  Only an IPv4-type Data LIF is supported. The Data LIF must be reachable from all KVM hypervisor hosts in CloudStack.
 -  Ensure Storage VM (SVM) is mapped to aggregates (aggrs) with sufficient
    capacity.
 -  For iSCSI: iSCSI protocol enabled on the KVM host and adapter is configured.
