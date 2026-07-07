@@ -1630,8 +1630,8 @@ required fields:
 -  Name: storage pool name
 -  Protocol: NFS3 or ISCSI
 -  Storage Array IP: ONTAP Storage IP or Management LIF
--  Username: ONTAP Storage IP username
--  Password: ONTAP Storage IP password
+-  Username: ONTAP Storage IP username (Cluster-level)
+-  Password: ONTAP Storage IP password (cluster-level)
 -  SVM Name: SVM name in ONTAP storage
 -  Capacity Bytes: total capacity in bytes
 -  Storage Tags: storage pool tags
