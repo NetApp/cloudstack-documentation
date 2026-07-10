@@ -1615,9 +1615,7 @@ environment before adding a storage pool in CloudStack:
 When this storage pool is used with Compute or Disk Offerings, an administrator
 is able to build an environment in which a root or data disk that a user creates
 leads to the dynamic creation of a LUN or file on the ONTAP volume. Such a
-LUN or file is associated with one (and only ever one) CloudStack volume, so
-performance of the CloudStack volume does not vary depending on how heavily other
-tenants are using the system.
+LUN or file is associated with one (and only ever one) CloudStack volume.
 
 Through the CloudStack UI, you can create ONTAP storage pool using these
 required fields:
