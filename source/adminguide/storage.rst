@@ -1140,12 +1140,12 @@ created from the volume.
 When an Instance is destroyed, data disk volumes that are attached to the Instance
 are not deleted unless specified.
 
-In managed storage systems such as SolidFire and others, the volume Snapshots
+In managed storage systems such as Solidfire and others, the volume Snapshots
 are linked entities in the volumes wherein deletion of the volume would delete
 those Snapshots. In such managed storage systems, the volume Snapshots exist on
 the primary storage and may not be backed up to the secondary storages. For a
 volume deleted in CloudStack, it will not be deleted on the managed storage
-(such as SolidFire and others) until all the volume Snapshots are deleted in
+(such as Solidfire and others) until all the volume Snapshots are deleted in
 CloudStack.
 
 On NetApp ONTAP primary storage, deletion of the volume will not delete
