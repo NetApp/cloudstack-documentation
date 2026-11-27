@@ -1148,6 +1148,9 @@ volume deleted in CloudStack, it will not be deleted on the managed storage
 (such as Solidfire and others) until all the volume Snapshots are deleted in
 CloudStack.
 
+On NetApp ONTAP primary storage, deletion of the volume will not delete
+those Snapshots. Snapshots can be deleted separately.
+
 Volumes are permanently destroyed using a garbage collection process.
 The global configuration variables expunge.delay and expunge.interval
 determine when the physical deletion of volumes will occur.
